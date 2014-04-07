@@ -10,3 +10,24 @@
 # 8. Ask player if they want to play again
 # 9. If YES, start over, if no EXIT.
 
+puts ">>What is your name?"
+player_name = gets.chomp
+
+puts "Welcome, #{name}. Let the games begin!"
+
+#numbers of cards
+card_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "Jack", "Queen", "King"]
+
+#suits of cards
+suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
+
+#create a deck of cards
+deck_of_cards = {
+
+}
+
+#deal the dealer
+
+#deal the player
+
+#Evaluate the winner
