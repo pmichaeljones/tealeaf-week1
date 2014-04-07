@@ -9,22 +9,38 @@
 # 7. Once dealer's card are determined, run evaluation method to find winner.
 # 8. Ask player if they want to play again
 # 9. If YES, start over, if no EXIT.
+# 10. Figure out except for ACES
+
+require 'pry'
+
+#create a deck of cards
+def build_deck(numbers, suites, deck = [])
+	#binding.pry
+	numbers.each do |x|
+		suites.each  do |y|
+			deck << x + "-" + y
+		end
+	end
+	return deck
+end
 
 puts ">>What is your name?"
 player_name = gets.chomp
 
-puts "Welcome, #{name}. Let the games begin!"
+puts "Welcome, #{player_name}. Let the games begin!"
 
 #numbers of cards
-card_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "Jack", "Queen", "King"]
+card_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
 
 #suits of cards
 suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
 
-#create a deck of cards
-deck_of_cards = {
+deck_of_cards = build_deck(card_names, suits)
 
-}
+#binding.pry
+
+print deck_of_cards
+
 
 #deal the dealer
 
