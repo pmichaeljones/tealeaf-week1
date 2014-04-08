@@ -18,10 +18,10 @@ def build_deck(numbers, suites, deck = [])
 	#binding.pry
 	numbers.each do |x|
 		suites.each  do |y|
-			deck << (x + "-" + y)#.to_sym
+			deck << (x + "-" + y)
 		end
 	end
-	return deck
+	return deck.shuffle
 end
 
 #give the cards a value with ACE exception (1 or 11 depending on value)
@@ -29,23 +29,23 @@ end
 def card_values(array)
 	array.inject({}) do |result, element|
 		result[element] = 
-			if element.include?("Ace")
+			if element.to_s.include?("Ace")
 				1
-			elsif element.include?("2")
+			elsif element.to_s.include?("2")
 				2
-			elsif element.include?("3")
+			elsif element.to_s.include?("3")
 				3
-			elsif element.include?("4")
+			elsif element.to_s.include?("4")
 				4
-			elsif element.include?("5")
+			elsif element.to_s.include?("5")
 				5
-			elsif element.include?("6")
+			elsif element.to_s.include?("6")
 				6
-			elsif element.include?("7")
+			elsif element.to_s.include?("7")
 				7
-			elsif element.include?("8")
+			elsif element.to_s.include?("8")
 				8
-			elsif element.include?("9")
+			elsif element.to_s.include?("9")
 				9
 			else #10 jack queen and king are all equal to 10
 				10
@@ -53,6 +53,16 @@ def card_values(array)
 		result
 	end
 end
+
+def evaluate_cards(array)
+	card_total = 0
+	array.each do |x|
+		card_total += @card_values_hash[x]
+	end
+	return card_total.to_i
+end
+
+
 
 puts ">>What is your name?"
 player_name = gets.chomp
@@ -69,11 +79,31 @@ suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
 deck_of_cards = build_deck(card_names, suits)
 
 #input the deck of cards into the value method to get card values
-card_values_hash = card_values(deck_of_cards)
+@card_values_hash = card_values(deck_of_cards)
 
-puts deck_of_cards
+dealer_cards = deck_of_cards.pop(2)
 
-puts card_values_hash
+puts "The Dealer has #{dealer_cards} for a total of #{evaluate_cards(dealer_cards)}"
+
+player_cards = deck_of_cards.pop(2)
+
+puts "You have #{player_cards} for a total of #{evaluate_cards(player_cards)}"
+
+puts "Hit or Stay?"
+response = gets.chomp.capitalize
+
+case response
+when "Hit"
+	player_cards = player_cards.concat(deck_of_cards.pop(1))
+	binding.pry
+	puts "You have #{player_cards} for a total of #{evaluate_cards(player_cards)}"
+when "Stay"
+	puts player_cards
+else
+	player_cards
+end
+
+
 
 #binding.pry
 
