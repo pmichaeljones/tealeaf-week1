@@ -13,9 +13,14 @@
 
 require 'pry'
 
+#numbers of cards
+card_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
+
+#suits of cards
+suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
+
 #create a deck of cards
 def build_deck(numbers, suites, deck = [])
-	#binding.pry
 	numbers.each do |x|
 		suites.each  do |y|
 			deck << (x + "-" + y)
@@ -62,46 +67,48 @@ def evaluate_cards(array)
 	return card_total.to_i
 end
 
+def hit_or_stay()
+	puts "Hit or Stay?"
+		response = gets.chomp.capitalize
+	case response
+		when "Hit"
+			@player_cards = @player_cards.concat(@deck_of_cards.pop(1))
+			puts "You have #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
+			hit_or_stay()
+		when "Stay"
+			puts "Your stayed with #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
+			return @player_cards
+		else
+			puts "I don't understand."
+			hit_or_stay()
+	end
+
+end
 
 
 puts ">>What is your name?"
 player_name = gets.chomp
 
 puts "Welcome, #{player_name}. Let the games begin!"
+puts "------------------"
 
-#numbers of cards
-card_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
-
-#suits of cards
-suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
 
 #instantiate the deck of cards array
-deck_of_cards = build_deck(card_names, suits)
+@deck_of_cards = build_deck(card_names, suits)
 
 #input the deck of cards into the value method to get card values
-@card_values_hash = card_values(deck_of_cards)
+@card_values_hash = card_values(@deck_of_cards)
 
-dealer_cards = deck_of_cards.pop(2)
+@dealer_cards = @deck_of_cards.pop(2)
 
-puts "The Dealer has #{dealer_cards} for a total of #{evaluate_cards(dealer_cards)}"
+puts "The Dealer has #{@dealer_cards} for a total of #{evaluate_cards(@dealer_cards)}."
 
-player_cards = deck_of_cards.pop(2)
+@player_cards = @deck_of_cards.pop(2)
 
-puts "You have #{player_cards} for a total of #{evaluate_cards(player_cards)}"
+puts "You have #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
 
-puts "Hit or Stay?"
-response = gets.chomp.capitalize
+hit_or_stay()
 
-case response
-when "Hit"
-	player_cards = player_cards.concat(deck_of_cards.pop(1))
-	binding.pry
-	puts "You have #{player_cards} for a total of #{evaluate_cards(player_cards)}"
-when "Stay"
-	puts player_cards
-else
-	player_cards
-end
 
 #nothing
 #again
