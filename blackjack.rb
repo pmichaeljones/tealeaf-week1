@@ -14,7 +14,7 @@
 require 'pry'
 
 #numbers of cards
-card_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
+card_names = ["Ace", "Ace", "Ace", "Ace", "Ace", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
 
 #suits of cards
 suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
@@ -59,12 +59,19 @@ def card_values(array)
 	end
 end
 
-def evaluate_cards(array)
-	card_total = 0
+def evaluate_cards(array, card_total = 0)
+	@grand_total = card_total
+	binding.pry
 	array.each do |x|
-		card_total += @card_values_hash[x]
+		@grand_total += @card_values_hash[x]
 	end
-	return card_total.to_i
+	
+	if (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total > 21
+		@grand_total -= 10
+		return @grand_total.to_i
+	else
+		return @grand_total.to_i
+	end
 end
 
 def hit_or_stay()
@@ -91,7 +98,7 @@ end
 def dealers_turn(dealers_cards)
 	@dealers_score = evaluate_cards(dealers_cards)
 
-	puts "The Dealer flips his cards and has #{@dealers_cards} for #{evaluate_cards(@dealers_cards)}."
+	puts "The Dealer flips his cards and has #{@dealers_cards} for #{@dealers_score}."
 
 	if @dealers_score >= 17 #dealer has 17 or higher, she stays
 		dealer_bust(@dealers_final_cards)
@@ -105,7 +112,7 @@ def dealers_turn(dealers_cards)
 		dealers_turn(@dealers_final_cards)
 	end
 	
-	end
+end
 
 def decide_winner(player_cards, dealers_final_cards)
 
@@ -177,16 +184,3 @@ puts "The Dealer has \"#{@dealers_cards[0]}\" and a face down card."
 puts "You have #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
 
 hit_or_stay()
-
-
-#nothing
-#again
-
-#binding.pry
-
-
-#deal the dealer
-
-#deal the player
-
-#Evaluate the winner
