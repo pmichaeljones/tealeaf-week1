@@ -35,7 +35,7 @@ def card_values(array)
 	array.inject({}) do |result, element|
 		result[element] = 
 			if element.to_s.include?("Ace")
-				1
+				11
 			elsif element.to_s.include?("2")
 				2
 			elsif element.to_s.include?("3")
@@ -77,13 +77,38 @@ def hit_or_stay()
 			hit_or_stay()
 		when "Stay"
 			puts "Your stayed with #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
-			return @player_cards
+			puts "Now the dealer's turn."
+			puts "---------"
+			dealers_turn(@dealers_cards)
 		else
 			puts "I don't understand."
 			hit_or_stay()
 	end
 
 end
+
+def dealers_turn(dealers_cards)
+	@dealers_score = evaluate_cards(dealers_cards)
+
+	puts "The Dealer flips his cards and has #{@dealers_cards}."
+
+	if @dealers_score >= 17 #dealer has 17 or higher, she stays
+		puts "The dealer's hand is 17 or above and must stay. Let's see who wins."
+		puts "-----"
+		decide_winner(@player_cards, @dealers_final_cards)
+
+	elsif @dealers_score < 17
+		puts "The dealer's hand is less than 17 and must hit."
+		@dealers_final_cards = dealers_cards.concat(@deck_of_cards.pop(1))
+		dealers_turn(@dealers_final_cards)
+	end
+	
+	end
+
+def decide_winner(player_cards, dealers_final_cards)
+
+end
+
 
 
 puts ">>What is your name?"
@@ -99,11 +124,15 @@ puts "------------------"
 #input the deck of cards into the value method to get card values
 @card_values_hash = card_values(@deck_of_cards)
 
-@dealer_cards = @deck_of_cards.pop(2)
+@dealers_cards  = @deck_of_cards.pop(1)
 
-puts "The Dealer has #{@dealer_cards} for a total of #{evaluate_cards(@dealer_cards)}."
+@player_cards  = @deck_of_cards.pop(1)
 
-@player_cards = @deck_of_cards.pop(2)
+@dealers_cards  = @dealers_cards.concat(@deck_of_cards.pop(1))
+
+@player_cards = @player_cards.concat(@deck_of_cards.pop(1))
+
+puts "The Dealer has \"#{@dealers_cards[0]}\" and a face down card."
 
 puts "You have #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
 
