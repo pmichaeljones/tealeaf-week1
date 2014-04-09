@@ -12,6 +12,7 @@
 # 10. Figure out except for ACES
 
 require 'pry'
+   
 
 def start_game(player_name = '')
 	#numbers of cards
@@ -59,7 +60,7 @@ end
 def build_deck(numbers, suites, deck = [])
 	numbers.each do |x|
 		suites.each  do |y|
-			deck << (x + "-" + y)
+		  deck << (x + "-" + y)
 		end
 	end
 	return deck.shuffle
