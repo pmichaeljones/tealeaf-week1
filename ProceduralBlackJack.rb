@@ -39,6 +39,9 @@ def start_game(player_name = '')
 	#input the deck of cards into the value method to get card values
 	@card_values_hash = card_values(@deck_of_cards)
 
+	#true card dealing is one card for each player at a time, not two at once. Hence the back and forth.
+
+
 	@dealers_cards  = @deck_of_cards.pop(1)
 
 	@player_cards  = @deck_of_cards.pop(1)
