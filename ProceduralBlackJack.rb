@@ -20,13 +20,13 @@ def start_game(player_name = '')
 
   #suits of cards
   suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
-	
+  
   if player_name.empty? 
-	puts ">>What is your name?"
-	@player_name = gets.chomp
-	puts "Welcome, #{@player_name}. Let the games begin!"
+  puts ">>What is your name?"
+  @player_name = gets.chomp
+  puts "Welcome, #{@player_name}. Let the games begin!"
   else
-	puts "Hi, #{player_name}. Welcome back."
+  puts "Hi, #{player_name}. Welcome back."
   end
 
 
@@ -62,8 +62,8 @@ end
 
 def build_deck(numbers, suites, deck = [])
   numbers.each do |x|
-	suites.each  do |y|
-	  deck << (x + "-" + y)
+  suites.each  do |y|
+    deck << (x + "-" + y)
   end
 end
 return deck.shuffle
@@ -73,29 +73,29 @@ end
 
 def card_values(array)
   array.inject({}) do |result, element|
-	result[element] = 
-	  if element.to_s.include?("Ace")
-		11
-	  elsif element.to_s.include?("2")
-		2
-   	  elsif element.to_s.include?("3")
-		3
+  result[element] = 
+    if element.to_s.include?("Ace")
+    11
+    elsif element.to_s.include?("2")
+    2
+      elsif element.to_s.include?("3")
+    3
       elsif element.to_s.include?("4")
-	    4
-	  elsif element.to_s.include?("5")
-	    5
-	  elsif element.to_s.include?("6")
-	    6
-	  elsif element.to_s.include?("7")
-    	7
-	  elsif element.to_s.include?("8")
-     	8
-	  elsif element.to_s.include?("9")
-	 	9
-	  else #10 jack queen and king are all equal to 10
-		10
+      4
+    elsif element.to_s.include?("5")
+      5
+    elsif element.to_s.include?("6")
+      6
+    elsif element.to_s.include?("7")
+      7
+    elsif element.to_s.include?("8")
+      8
+    elsif element.to_s.include?("9")
+    9
+    else #10 jack queen and king are all equal to 10
+    10
       end
-	result
+  result
   end
 end
 
@@ -104,24 +104,24 @@ end
 def evaluate_cards(array, card_total = 0)
   @grand_total = card_total
   array.each do |x|
-	@grand_total += @card_values_hash[x]
+  @grand_total += @card_values_hash[x]
   end
 
   # Not the happiest with this logic. Needed to deal with players hitting when they have double aces and making them 2 instead of 22
 
   if (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total > 21 && @grand_total <= 31
-	@grand_total -= 10
-	return @grand_total.to_i
+  @grand_total -= 10
+  return @grand_total.to_i
   
   elsif (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total > 32 && @grand_total <= 42
-	@grand_total -= 20
-	return @grand_total.to_i
+  @grand_total -= 20
+  return @grand_total.to_i
   
   elsif (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total == 43
-	@grand_total -= 30
-	return @grand_total.to_i
+  @grand_total -= 30
+  return @grand_total.to_i
   else
-	return @grand_total.to_i
+  return @grand_total.to_i
   end
 
 end
@@ -129,108 +129,108 @@ end
 #Player gets choice if they want to keep their current cards or get another (hit)
 
 def hit_or_stay()
-	puts "Hit or Stay?"
-		response = gets.chomp.capitalize
-	case response
-		when "Hit"
-			@player_cards = @player_cards.concat(@deck_of_cards.pop(1))
-			@players_score = evaluate_cards(@player_cards)
-			puts "You have #{@player_cards} for a total of #{@players_score}."
-			check_bust(@players_score)
-			hit_or_stay()
-		when "Stay"
-			@players_score = evaluate_cards(@player_cards)
-			puts "Your stayed with #{@player_cards} for a total of #{@players_score}."
-			puts "Now the dealer's turn."
-			puts "---------"
-			dealers_turn(@dealers_cards)
-		else
-			puts "I don't understand."
-			hit_or_stay()
-	end
+  puts "Hit or Stay?"
+    response = gets.chomp.capitalize
+  case response
+    when "Hit"
+      @player_cards = @player_cards.concat(@deck_of_cards.pop(1))
+      @players_score = evaluate_cards(@player_cards)
+      puts "You have #{@player_cards} for a total of #{@players_score}."
+      check_bust(@players_score)
+      hit_or_stay()
+    when "Stay"
+      @players_score = evaluate_cards(@player_cards)
+      puts "Your stayed with #{@player_cards} for a total of #{@players_score}."
+      puts "Now the dealer's turn."
+      puts "---------"
+      dealers_turn(@dealers_cards)
+    else
+      puts "I don't understand."
+      hit_or_stay()
+  end
 
 end
 
 #Dealer's turn. Needs to hit on 16s and stay on 17s and up
 
 def dealers_turn(dealers_cards)
-	@dealers_score = evaluate_cards(dealers_cards)
+  @dealers_score = evaluate_cards(dealers_cards)
 
-	puts "The Dealer flips his card and has #{dealers_cards} for #{@dealers_score}."
+  puts "The Dealer flips his card and has #{dealers_cards} for #{@dealers_score}."
 
-	if @dealers_score >= 17 #dealer has 17 or higher, she stays
-		@dealers_final_cards = dealers_cards
-		dealer_bust(@dealers_score)
-		puts "The dealer's hand is 17 or above and must stay. Let's see who wins."
-		puts "-----"
-		decide_winner(@players_score, @dealers_score)
+  if @dealers_score >= 17 #dealer has 17 or higher, she stays
+    @dealers_final_cards = dealers_cards
+    dealer_bust(@dealers_score)
+    puts "The dealer's hand is 17 or above and must stay. Let's see who wins."
+    puts "-----"
+    decide_winner(@players_score, @dealers_score)
 
-	elsif @dealers_score < 17
-		puts "The dealer's hand is less than 17 and must hit."
-		@dealers_final_cards = dealers_cards.concat(@deck_of_cards.pop(1))
-		dealers_turn(@dealers_final_cards)
-	end
-	
+  elsif @dealers_score < 17
+    puts "The dealer's hand is less than 17 and must hit."
+    @dealers_final_cards = dealers_cards.concat(@deck_of_cards.pop(1))
+    dealers_turn(@dealers_final_cards)
+  end
+  
 end
 
 #compare the player's score to the dealer's score
 
 def decide_winner(player_score, dealer_score) 
-	if player_score > dealer_score && player_score <= 21
-		puts "Your score of #{player_score} beats the dealers #{dealer_score}. You win!"
-		play_again()
+  if player_score > dealer_score && player_score <= 21
+    puts "Your score of #{player_score} beats the dealers #{dealer_score}. You win!"
+    play_again()
 
-	elsif player_score < dealer_score && dealer_score <= 21
-		puts "The dealer's #{dealer_score} beats your #{player_score}. Dealer Wins."
-		play_again()
+  elsif player_score < dealer_score && dealer_score <= 21
+    puts "The dealer's #{dealer_score} beats your #{player_score}. Dealer Wins."
+    play_again()
 
-	elsif player_score == dealer_score
-		puts "You both have a score of #{player_score}. That's a Push!"
-		play_again()
-	else
-		puts "How did you get here? I thought I had it all worked out????"
-	end
+  elsif player_score == dealer_score
+    puts "You both have a score of #{player_score}. That's a Push!"
+    play_again()
+  else
+    puts "How did you get here? I thought I had it all worked out????"
+  end
 
 end
 
 #check to see if the player busts after each hit
 
 def check_bust(score) 
-	if score > 21
-		puts "Sorry buddy, you busted."
-		play_again()
-	else
-		nil
-	end
+  if score > 21
+    puts "Sorry buddy, you busted."
+    play_again()
+  else
+    nil
+  end
 
 end
 
 #check to see if the dealer busts after each hit
 
 def dealer_bust(score) 
-	if score > 21
-		puts "Dealer busted. You win!"
-		play_again()
-	else
-		nil
-	end
+  if score > 21
+    puts "Dealer busted. You win!"
+    play_again()
+  else
+    nil
+  end
 
 end
 
 #good way to DRY up my code. Call this method after every game ends.
 
 def play_again 
-	puts "Play again? Type Yes or No"
-	response = gets.chomp.capitalize
-		if response == "Yes"
-			start_game(@player_name)
-		elsif response == "No"
-			puts "Thanks for playing."
-			Process.exit()
-		else
-			puts "Does '#{response}' look like 'Yes' or 'No' to you? Do you know how to type?"
-			play_again()
-		end
+  puts "Play again? Type Yes or No"
+  response = gets.chomp.capitalize
+    if response == "Yes"
+      start_game(@player_name)
+    elsif response == "No"
+      puts "Thanks for playing."
+      Process.exit()
+    else
+      puts "Does '#{response}' look like 'Yes' or 'No' to you? Do you know how to type?"
+      play_again()
+    end
 end
 
   
