@@ -55,7 +55,6 @@ end
 
 def evaluate_cards(array, card_total = 0)
 	@grand_total = card_total
-	binding.pry
 	array.each do |x|
 		@grand_total += @card_values_hash[x]
 	end
@@ -74,11 +73,13 @@ def hit_or_stay()
 	case response
 		when "Hit"
 			@player_cards = @player_cards.concat(@deck_of_cards.pop(1))
-			puts "You have #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
-			check_bust(@player_cards)
+			@players_score = evaluate_cards(@player_cards)
+			puts "You have #{@player_cards} for a total of #{@players_score}."
+			check_bust(@players_score)
 			hit_or_stay()
 		when "Stay"
-			puts "Your stayed with #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
+			@players_score = evaluate_cards(@player_cards)
+			puts "Your stayed with #{@player_cards} for a total of #{@players_score}."
 			puts "Now the dealer's turn."
 			puts "---------"
 			dealers_turn(@dealers_cards)
@@ -92,13 +93,14 @@ end
 def dealers_turn(dealers_cards)
 	@dealers_score = evaluate_cards(dealers_cards)
 
-	puts "The Dealer flips his cards and has #{@dealers_cards} for #{@dealers_score}."
+	puts "The Dealer flips his cards and has #{dealers_cards} for #{@dealers_score}."
 
 	if @dealers_score >= 17 #dealer has 17 or higher, she stays
-		dealer_bust(@dealers_final_cards)
+		@dealers_final_cards = dealers_cards
+		dealer_bust(@dealers_score)
 		puts "The dealer's hand is 17 or above and must stay. Let's see who wins."
 		puts "-----"
-		decide_winner(@player_cards, @dealers_final_cards)
+		decide_winner(@players_score, @dealers_score)
 
 	elsif @dealers_score < 17
 		puts "The dealer's hand is less than 17 and must hit."
@@ -108,41 +110,51 @@ def dealers_turn(dealers_cards)
 	
 end
 
-def decide_winner(player_cards, dealers_final_cards)
+def decide_winner(player_score, dealer_score)
+	if player_score > dealer_score && players_score <= 21
+		puts "You win!"
+		play_again()
 
+	elsif player_score < dealer_score && dealers_score <= 21
+		puts "Dealer Wins"
+		play_again()
+
+	elsif player_score == dealer_score
+		puts "Push!"
+		play_again()
+	else
+		puts "How did you get here? I thought I had it all worked out????"
+	end
+	
 end
 
-def dealer_bust(cards)
-	if evaluate_cards(cards) > 21
+def dealer_bust(score)
+	if score > 21
 		puts "Dealer busted. You win!"
-		puts "Play again?"
-		response = gets.chomp.capitalize
-		if response == "Yes"
-			puts "Haven't figured this one out yet."
-			Process.exit()
-		else
-			puts "Thanks for playing."
-			Process.exit()
-		end
+		play_again()
 	else
-		return cards
+		nil
 	end
 
 end
 
-
-def check_bust(cards)
-	if evaluate_cards(cards) > 21
-		puts "Sorry buddy, you busted."
-		puts "Play again?"
-		response = gets.chomp.capitalize
+def play_again
+	puts "Play again?"
+	response = gets.chomp.capitalize
 		if response == "Yes"
 			start_game()
 		else
 			puts "Thanks for playing."
 			Process.exit()
 		end
+end
 
+
+
+def check_bust(score)
+	if score > 21
+		puts "Sorry buddy, you busted."
+		play_again()
 	else
 		nil
 	end
