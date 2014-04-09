@@ -13,12 +13,6 @@
 
 require 'pry'
 
-#numbers of cards
-card_names = ["Ace", "Ace", "Ace", "Ace", "Ace", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
-
-#suits of cards
-suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
-
 #create a deck of cards
 def build_deck(numbers, suites, deck = [])
 	numbers.each do |x|
@@ -143,8 +137,7 @@ def check_bust(cards)
 		puts "Play again?"
 		response = gets.chomp.capitalize
 		if response == "Yes"
-			puts "Haven't figured this one out yet."
-			Process.exit()
+			start_game()
 		else
 			puts "Thanks for playing."
 			Process.exit()
@@ -157,30 +150,39 @@ def check_bust(cards)
 end
 
 
+def start_game()
+	#numbers of cards
+	card_names = ["Ace", "Ace", "Ace", "Ace", "Ace", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
 
-puts ">>What is your name?"
-player_name = gets.chomp
+	#suits of cards
+	suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
+	
+	puts ">>What is your name?"
+	player_name = gets.chomp
 
-puts "Welcome, #{player_name}. Let the games begin!"
-puts "------------------"
+	puts "Welcome, #{player_name}. Let the games begin!"
+	puts "------------------"
 
 
-#instantiate the deck of cards array
-@deck_of_cards = build_deck(card_names, suits)
+	#instantiate the deck of cards array
+	@deck_of_cards = build_deck(card_names, suits)
 
-#input the deck of cards into the value method to get card values
-@card_values_hash = card_values(@deck_of_cards)
+	#input the deck of cards into the value method to get card values
+	@card_values_hash = card_values(@deck_of_cards)
 
-@dealers_cards  = @deck_of_cards.pop(1)
+	@dealers_cards  = @deck_of_cards.pop(1)
 
-@player_cards  = @deck_of_cards.pop(1)
+	@player_cards  = @deck_of_cards.pop(1)
 
-@dealers_cards  = @dealers_cards.concat(@deck_of_cards.pop(1))
+	@dealers_cards  = @dealers_cards.concat(@deck_of_cards.pop(1))
 
-@player_cards = @player_cards.concat(@deck_of_cards.pop(1))
+	@player_cards = @player_cards.concat(@deck_of_cards.pop(1))
 
-puts "The Dealer has \"#{@dealers_cards[0]}\" and a face down card."
+	puts "The Dealer has \"#{@dealers_cards[0]}\" and a face down card."
 
-puts "You have #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
+	puts "You have #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
 
-hit_or_stay()
+	hit_or_stay()
+end
+
+start_game()
