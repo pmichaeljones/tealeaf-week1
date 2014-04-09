@@ -15,112 +15,115 @@ require 'pry'
    
 
 def start_game(player_name = '')
-	#numbers of cards
-	card_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
+  #numbers of cards
+  card_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
 
-	#suits of cards
-	suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
+  #suits of cards
+  suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
 	
-	if player_name.empty? 
-		puts ">>What is your name?"
-		@player_name = gets.chomp
-		puts "Welcome, #{@player_name}. Let the games begin!"
-	else
-		puts "Hi, #{player_name}. Welcome back."
-	end
+  if player_name.empty? 
+	puts ">>What is your name?"
+	@player_name = gets.chomp
+	puts "Welcome, #{@player_name}. Let the games begin!"
+  else
+	puts "Hi, #{player_name}. Welcome back."
+  end
 
 
-	puts "------------------"
+  puts "------------------"
 
 
-	#instantiate the deck of cards array
-	@deck_of_cards = build_deck(card_names, suits)
+  #instantiate the deck of cards array
+  @deck_of_cards = build_deck(card_names, suits)
 
-	#input the deck of cards into the value method to get card values
-	@card_values_hash = card_values(@deck_of_cards)
+  #input the deck of cards into the value method to get card values
+  @card_values_hash = card_values(@deck_of_cards)
 
-	#true card dealing is one card for each player at a time, not two at once. Hence the back and forth.
+  #true card dealing is one card for each player at a time, not two at once. Hence the back and forth.
 
 
-	@dealers_cards  = @deck_of_cards.pop(1)
+  @dealers_cards  = @deck_of_cards.pop(1)
 
-	@player_cards  = @deck_of_cards.pop(1)
+  @player_cards  = @deck_of_cards.pop(1)
 
-	@dealers_cards  = @dealers_cards.concat(@deck_of_cards.pop(1))
+  @dealers_cards  = @dealers_cards.concat(@deck_of_cards.pop(1))
 
-	@player_cards = @player_cards.concat(@deck_of_cards.pop(1))
+  @player_cards = @player_cards.concat(@deck_of_cards.pop(1))
 
-	puts "The Dealer has \"#{@dealers_cards[0]}\" and a face down card."
+  puts "The Dealer has \"#{@dealers_cards[0]}\" and a face down card."
 
-	puts "You have #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
+  puts "You have #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
 
-	hit_or_stay()
+  hit_or_stay()
 end
 
 
 #create a deck of cards
 
 def build_deck(numbers, suites, deck = [])
-	numbers.each do |x|
-		suites.each  do |y|
-		  deck << (x + "-" + y)
-		end
-	end
-	return deck.shuffle
+  numbers.each do |x|
+	suites.each  do |y|
+	  deck << (x + "-" + y)
+  end
+end
+return deck.shuffle
 end
 
 #give the cards a value with ACE exception (1 or 11 depending on value)
 
 def card_values(array)
-	array.inject({}) do |result, element|
-		result[element] = 
-			if element.to_s.include?("Ace")
-				11
-			elsif element.to_s.include?("2")
-				2
-			elsif element.to_s.include?("3")
-				3
-			elsif element.to_s.include?("4")
-				4
-			elsif element.to_s.include?("5")
-				5
-			elsif element.to_s.include?("6")
-				6
-			elsif element.to_s.include?("7")
-				7
-			elsif element.to_s.include?("8")
-				8
-			elsif element.to_s.include?("9")
-				9
-			else #10 jack queen and king are all equal to 10
-				10
-			end
-		result
-	end
+  array.inject({}) do |result, element|
+	result[element] = 
+	  if element.to_s.include?("Ace")
+		11
+	  elsif element.to_s.include?("2")
+		2
+   	  elsif element.to_s.include?("3")
+		3
+      elsif element.to_s.include?("4")
+	    4
+	  elsif element.to_s.include?("5")
+	    5
+	  elsif element.to_s.include?("6")
+	    6
+	  elsif element.to_s.include?("7")
+    	7
+	  elsif element.to_s.include?("8")
+     	8
+	  elsif element.to_s.include?("9")
+	 	9
+	  else #10 jack queen and king are all equal to 10
+		10
+      end
+	result
+  end
 end
 
 #pass the array of cards into the values hash to get a value for how much each card is worth
 
 def evaluate_cards(array, card_total = 0)
-	@grand_total = card_total
-	array.each do |x|
-		@grand_total += @card_values_hash[x]
-	end
-	
-	# Not the happiest with this logic. Needed to deal with players hitting when they have double aces and making them 2 instead of 22
+  @grand_total = card_total
+  array.each do |x|
+	@grand_total += @card_values_hash[x]
+  end
 
-	if (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total > 21 && @grand_total <= 31
-		@grand_total -= 10
-		return @grand_total.to_i
-	elsif (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total > 32 && @grand_total <= 42
-		@grand_total -= 20
-		return @grand_total.to_i
-	elsif (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total == 43
-		@grand_total -= 30
-		return @grand_total.to_i
-	else
-		return @grand_total.to_i
-	end
+  # Not the happiest with this logic. Needed to deal with players hitting when they have double aces and making them 2 instead of 22
+
+  if (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total > 21 && @grand_total <= 31
+	@grand_total -= 10
+	return @grand_total.to_i
+  
+  elsif (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total > 32 && @grand_total <= 42
+	@grand_total -= 20
+	return @grand_total.to_i
+  
+  elsif (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total == 43
+	@grand_total -= 30
+	return @grand_total.to_i
+  else
+	return @grand_total.to_i
+  end
+
 end
 
 #Player gets choice if they want to keep their current cards or get another (hit)
@@ -230,6 +233,6 @@ def play_again
 		end
 end
 
-
+  
 
 start_game()
