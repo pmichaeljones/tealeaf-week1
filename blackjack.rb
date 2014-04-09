@@ -13,7 +13,49 @@
 
 require 'pry'
 
+def start_game(player_name = '')
+	#numbers of cards
+	card_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
+
+	#suits of cards
+	suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
+	
+	if player_name.empty? 
+		puts ">>What is your name?"
+		@player_name = gets.chomp
+		puts "Welcome, #{@player_name}. Let the games begin!"
+	else
+		puts "Hi, #{player_name}. Welcome back."
+	end
+
+
+	puts "------------------"
+
+
+	#instantiate the deck of cards array
+	@deck_of_cards = build_deck(card_names, suits)
+
+	#input the deck of cards into the value method to get card values
+	@card_values_hash = card_values(@deck_of_cards)
+
+	@dealers_cards  = @deck_of_cards.pop(1)
+
+	@player_cards  = @deck_of_cards.pop(1)
+
+	@dealers_cards  = @dealers_cards.concat(@deck_of_cards.pop(1))
+
+	@player_cards = @player_cards.concat(@deck_of_cards.pop(1))
+
+	puts "The Dealer has \"#{@dealers_cards[0]}\" and a face down card."
+
+	puts "You have #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
+
+	hit_or_stay()
+end
+
+
 #create a deck of cards
+
 def build_deck(numbers, suites, deck = [])
 	numbers.each do |x|
 		suites.each  do |y|
@@ -53,19 +95,31 @@ def card_values(array)
 	end
 end
 
+#pass the array of cards into the values hash to get a value for how much each card is worth
+
 def evaluate_cards(array, card_total = 0)
 	@grand_total = card_total
 	array.each do |x|
 		@grand_total += @card_values_hash[x]
 	end
 	
-	if (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total > 21
+	# Not the happiest with this logic. Needed to deal with players hitting when they have double aces and making them 2 instead of 22
+
+	if (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total > 21 && @grand_total <= 31
 		@grand_total -= 10
+		return @grand_total.to_i
+	elsif (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total > 32 && @grand_total <= 42
+		@grand_total -= 20
+		return @grand_total.to_i
+	elsif (array.include?("Ace-Spades") || array.include?("Ace-Hearts") || array.include?("Ace-Diamonds") || array.include?("Ace-Clubs")) && @grand_total == 43
+		@grand_total -= 30
 		return @grand_total.to_i
 	else
 		return @grand_total.to_i
 	end
 end
+
+#Player gets choice if they want to keep their current cards or get another (hit)
 
 def hit_or_stay()
 	puts "Hit or Stay?"
@@ -90,10 +144,12 @@ def hit_or_stay()
 
 end
 
+#Dealer's turn. Needs to hit on 16s and stay on 17s and up
+
 def dealers_turn(dealers_cards)
 	@dealers_score = evaluate_cards(dealers_cards)
 
-	puts "The Dealer flips his cards and has #{dealers_cards} for #{@dealers_score}."
+	puts "The Dealer flips his card and has #{dealers_cards} for #{@dealers_score}."
 
 	if @dealers_score >= 17 #dealer has 17 or higher, she stays
 		@dealers_final_cards = dealers_cards
@@ -110,48 +166,29 @@ def dealers_turn(dealers_cards)
 	
 end
 
-def decide_winner(player_score, dealer_score)
-	if player_score > dealer_score && players_score <= 21
-		puts "You win!"
+#compare the player's score to the dealer's score
+
+def decide_winner(player_score, dealer_score) 
+	if player_score > dealer_score && player_score <= 21
+		puts "Your score of #{player_score} beats the dealers #{dealer_score}. You win!"
 		play_again()
 
-	elsif player_score < dealer_score && dealers_score <= 21
-		puts "Dealer Wins"
+	elsif player_score < dealer_score && dealer_score <= 21
+		puts "The dealer's #{dealer_score} beats your #{player_score}. Dealer Wins."
 		play_again()
 
 	elsif player_score == dealer_score
-		puts "Push!"
+		puts "You both have a score of #{player_score}. That's a Push!"
 		play_again()
 	else
 		puts "How did you get here? I thought I had it all worked out????"
 	end
-	
-end
-
-def dealer_bust(score)
-	if score > 21
-		puts "Dealer busted. You win!"
-		play_again()
-	else
-		nil
-	end
 
 end
 
-def play_again
-	puts "Play again?"
-	response = gets.chomp.capitalize
-		if response == "Yes"
-			start_game()
-		else
-			puts "Thanks for playing."
-			Process.exit()
-		end
-end
+#check to see if the player busts after each hit
 
-
-
-def check_bust(score)
+def check_bust(score) 
 	if score > 21
 		puts "Sorry buddy, you busted."
 		play_again()
@@ -161,40 +198,34 @@ def check_bust(score)
 
 end
 
+#check to see if the dealer busts after each hit
 
-def start_game()
-	#numbers of cards
-	card_names = ["Ace", "Ace", "Ace", "Ace", "Ace", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
+def dealer_bust(score) 
+	if score > 21
+		puts "Dealer busted. You win!"
+		play_again()
+	else
+		nil
+	end
 
-	#suits of cards
-	suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
-	
-	puts ">>What is your name?"
-	player_name = gets.chomp
-
-	puts "Welcome, #{player_name}. Let the games begin!"
-	puts "------------------"
-
-
-	#instantiate the deck of cards array
-	@deck_of_cards = build_deck(card_names, suits)
-
-	#input the deck of cards into the value method to get card values
-	@card_values_hash = card_values(@deck_of_cards)
-
-	@dealers_cards  = @deck_of_cards.pop(1)
-
-	@player_cards  = @deck_of_cards.pop(1)
-
-	@dealers_cards  = @dealers_cards.concat(@deck_of_cards.pop(1))
-
-	@player_cards = @player_cards.concat(@deck_of_cards.pop(1))
-
-	puts "The Dealer has \"#{@dealers_cards[0]}\" and a face down card."
-
-	puts "You have #{@player_cards} for a total of #{evaluate_cards(@player_cards)}."
-
-	hit_or_stay()
 end
+
+#good way to DRY up my code. Call this method after every game ends.
+
+def play_again 
+	puts "Play again? Type Yes or No"
+	response = gets.chomp.capitalize
+		if response == "Yes"
+			start_game(@player_name)
+		elsif response == "No"
+			puts "Thanks for playing."
+			Process.exit()
+		else
+			puts "Does '#{response}' look like 'Yes' or 'No' to you? Do you know how to type?"
+			play_again()
+		end
+end
+
+
 
 start_game()
