@@ -3,7 +3,21 @@ def calculate_total(cards) # [["Hearts", "3"], ["Clubs", "10"].....]
 
   total = 0
 
+  arr.each do |value|
+    if value == "A"
+      total += 11
+    elsif value.to_i == 0 #jack, queen, king
+      total += 10
+    elsif
+      total += value.to_i
+    end
+  end
 
+  arr.select{|e| e == "A"}.count.times do
+    if total > 21
+      total -= 10
+    end
+  end
 
   total
 end
