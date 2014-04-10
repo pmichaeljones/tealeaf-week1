@@ -1,5 +1,11 @@
 def calculate_total(cards) # [["Hearts", "3"], ["Clubs", "10"].....]
+  arr = cards.map{|e| e[1] }
 
+  total = 0
+
+
+
+  total
 end
 
 
