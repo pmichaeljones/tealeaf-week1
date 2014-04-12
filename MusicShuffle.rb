@@ -14,11 +14,9 @@ shuffled_music = []
   shuffled_music
 end
 
-
 Dir.chdir("/Users/patrickjones/Music") #changes directory to the music folder
 
 music_file_array = shuffle(Dir['**/*.{mp3,MP3}']) #searches for all MP3s
-
 
 Dir.chdir("/Users/patrickjones/Projects/Tealeaf/Week1")
 
