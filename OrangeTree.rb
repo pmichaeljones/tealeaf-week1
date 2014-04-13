@@ -11,6 +11,7 @@ class OrangeTree
   end
 
   def pick_an_orange
+    @oranges = @oranges -= 1
   end
 
   def many_years_pass(years)
@@ -21,12 +22,13 @@ class OrangeTree
 
 
   def one_year_passes
+    @oranges = 0
     @age =+ @age + 1
 
     unless @age > 10
       @oranges = 0
     else
-      @oranges = @oranges + @age * (rand(2)+1)
+      @oranges = @oranges + @age * (rand(4)+1)
     end
 
     growth = ((rand(3)+1) * rand(5))
