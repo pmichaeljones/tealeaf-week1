@@ -22,7 +22,14 @@ class OrangeTree
 
   def one_year_passes
     @age =+ @age + 1
-    growth = ((rand(3)+1) * rand(4))
+
+    unless @age > 10
+      @oranges = 0
+    else
+      @oranges = @oranges + @age * (rand(2)+1)
+    end
+
+    growth = ((rand(3)+1) * rand(5))
     @height = @height + growth #these are inches
 
     if @height >= 12
@@ -33,7 +40,7 @@ class OrangeTree
       @height_inches = @height
     end
 
-    puts "Our orange tree is now #{age} years old and #{@height_feet} feet and #{@height_inches} inches tall."
+    puts "Our orange tree is now #{age} years old, has #{@oranges} oranges and #{@height_feet} feet and #{@height_inches} inches tall."
 
     if growth == 0
       puts "No growth this year. Blame it on the drought."
