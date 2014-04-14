@@ -1,3 +1,4 @@
+#start class
 class BabyDragon
   attr_accessor :name, :gender, :happiness_level, :weight
 
